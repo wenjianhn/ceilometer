@@ -243,7 +243,7 @@
       fields: _context_user_id
     project_id:
       fields: _context_tenant
-- event_type: ['network.*', 'subnet.*', 'port.*', 'router.*', 'floatingip.*', 'pool.*', 'vip.*', 'member.*', 'health_monitor.*', 'firewall.*', 'firewall_policy.*', 'firewall_rule.*', 'vpnservice.*', 'ipsecpolicy.*', 'ikepolicy.*', 'ipsec_site_connection.*']
+- event_type: ['network.*', 'subnet.*', 'port.*', 'router.*', 'floatingip.*', 'firewall.*', 'firewall_policy.*', 'firewall_rule.*', 'vpnservice.*', 'ipsecpolicy.*', 'ikepolicy.*', 'ipsec_site_connection.*']
   traits: &network_traits
     user_id:
       fields: _context_user_id
@@ -274,26 +274,6 @@
     <<: *network_traits
     resource_id:
       fields: ['payload.floatingip.id', 'payload.id']
-- event_type: pool.*
-  traits:
-    <<: *network_traits
-    resource_id:
-      fields: ['payload.pool.id', 'payload.id']
-- event_type: vip.*
-  traits:
-    <<: *network_traits
-    resource_id:
-      fields: ['payload.vip.id', 'payload.id']
-- event_type: member.*
-  traits:
-    <<: *network_traits
-    resource_id:
-      fields: ['payload.member.id', 'payload.id']
-- event_type: health_monitor.*
-  traits:
-    <<: *network_traits
-    resource_id:
-      fields: ['payload.health_monitor.id', 'payload.id']
 - event_type: firewall.*
   traits:
     <<: *network_traits
@@ -366,3 +346,281 @@
     <<: *http_audit
     reason_code:
       fields: payload.reason.reasonCode
+- event_type: loadbalancer.*
+  traits: &loadbalancer_traits
+    user_id:
+      fields: _context_user_id
+    project_id:
+      fields: _context_tenant_id
+    name:
+      fields: payload.loadbalancer.name
+    resource_id:
+      fields: ['payload.loadbalancer.id', 'payload.id', 'payload.loadbalancer_id']
+    admin_state_up:
+      fields: payload.loadbalancer.admin_state_up
+- event_type: loadbalancer.create.start
+  traits:
+    <<: *loadbalancer_traits
+    vip_subnet_id:
+      fields: payload.loadbalancer.vip_subnet_id
+    vip_address:
+      fields: payload.loadbalancer.vip_address
+- event_type: loadbalancer.create.end
+  traits:
+    <<: *loadbalancer_traits
+    description:
+      fields: payload.loadbalancer.description
+    tenant_id:
+      fields: payload.loadbalancer.tenant_id
+    provisioning_status:
+      fields: payload.loadbalancer.provisioning_status
+    listeners:
+      fields: payload.loadbalancer.listeners
+    vip_address:
+      fields: payload.loadbalancer.vip_address
+    vip_port_id:
+      fields: payload.loadbalancer.vip_port_id
+    provider:
+      fields: payload.loadbalancer.provider
+    vip_subnet_id:
+      fields: payload.loadbalancer.vip_subnet_id
+    operating_status:
+      fields: payload.loadbalancer.operating_status
+- event_type: loadbalancer.update.end
+  traits:
+    <<: *loadbalancer_traits
+    description:
+      fields: payload.loadbalancer.description
+    tenant_id:
+      fields: payload.loadbalancer.tenant_id
+    provisioning_status:
+      fields: payload.loadbalancer.provisioning_status
+    listeners:
+      fields: payload.loadbalancer.listeners
+    vip_address:
+      fields: payload.loadbalancer.vip_address
+    vip_port_id:
+      fields: payload.loadbalancer.vip_port_id
+    provider:
+      fields: payload.loadbalancer.provider
+    vip_subnet_id:
+      fields: payload.loadbalancer.vip_subnet_id
+    operating_status:
+      fields: payload.loadbalancer.operating_status
+- event_type: listener.*
+  traits: &listener_traits
+    user_id:
+      fields: _context_user_id
+    project_id:
+      fields: _context_tenant_id
+    resource_id:
+      fields: ['payload.listener.id', 'payload.id']
+    admin_state_up:
+      fields: payload.listener.admin_state_up
+    name:
+      fields: payload.listener.name
+- event_type: listener.create.start
+  traits:
+    <<: *listener_traits
+    protocol_port:
+      fields: payload.listener.protocol_port
+    protocol:
+      fields: payload.listener.protocol
+    loadbalancer_id:
+      fields: payload.listener.loadbalancer_id
+- event_type: listener.create.end
+  traits:
+    <<: *listener_traits
+    default_pool_id:
+      fields: payload.listener.default_pool_id
+    protocol:
+      fields: payload.listener.protocol
+    description:
+      fields: payload.listener.description
+    sni_container_ids:
+      fields: payload.listener.sni_container_ids
+    loadbalancers:
+      fields: payload.listener.loadbalancers
+    tenant_id:
+      fields: payload.listener.tenant_id
+    default_tls_container_id:
+      fields: payload.listener.default_tls_container_id
+    connection_limit:
+      fields: payload.listener.connection_limit
+    protocol_port:
+      fields: payload.listener.protocol_port
+- event_type: listener.update.end
+  traits:
+    <<: *listener_traits
+    default_pool_id:
+      fields: payload.listener.default_pool_id
+    protocol:
+      fields: payload.listener.protocol
+    description:
+      fields: payload.listener.description
+    sni_container_ids:
+      fields: payload.listener.sni_container_ids
+    loadbalancers:
+      fields: payload.listener.loadbalancers
+    tenant_id:
+      fields: payload.listener.tenant_id
+    default_tls_container_id:
+      fields: payload.listener.default_tls_container_id
+    connection_limit:
+      fields: payload.listener.connection_limit
+    protocol_port:
+      fields: payload.listener.protocol_port
+- event_type: pool.*
+  traits: &pool_traits
+    user_id:
+      fields: _context_user_id
+    project_id:
+      fields: _context_tenant_id
+    name:
+      fields: payload.pool.name
+    resource_id:
+      fields: ['payload.pool.id', 'payload.id', 'payload.pool_id']
+    admin_state_up:
+      fields: payload.pool.admin_state_up
+    protocol:
+      fields: payload.pool.protocol
+- event_type: pool.create.start
+  traits:
+    <<: *pool_traits
+    lb_algorithm:
+      fields: payload.pool.lb_algorithm
+    listener_id:
+      fields: payload.pool.listener_id
+- event_type: pool.create.end
+  traits:
+    <<: *pool_traits
+    lb_algorithm:
+      fields: payload.pool.lb_algorithm
+    description:
+      fields: payload.pool.description
+    tenant_id:
+      fields: payload.pool.tenant_id
+    session_persistence:
+      fields: payload.pool.session_persistence
+    healthmonitor_id:
+      fields: payload.pool.healthmonitor_id
+    listeners:
+      fields: payload.pool.listeners
+    members:
+      fields: payload.pool.members
+- event_type: pool.update.end
+  traits:
+    <<: *pool_traits
+    lb_algorithm:
+      fields: payload.pool.lb_algorithm
+    description:
+      fields: payload.pool.description
+    tenant_id:
+      fields: payload.pool.tenant_id
+    session_persistence:
+      fields: payload.pool.session_persistence
+    healthmonitor_id:
+      fields: payload.pool.healthmonitor_id
+    listeners:
+      fields: payload.pool.listeners
+    members:
+      fields: payload.pool.members
+- event_type: member.*
+  traits: &member_traits
+    user_id:
+      fields: _context_user_id
+    project_id:
+      fields: _context_tenant_id
+    resource_id:
+      fields: ['payload.member.id', 'payload.id', 'payload.member_id']
+    admin_state_up:
+      fields: payload.member.admin_state_up
+- event_type: member.create.start
+  traits:
+    <<: *member_traits
+    subnet_id:
+      fields: payload.member.subnet_id
+    protocol_port:
+      fields: payload.member.protocol_port
+    address:
+      fields: payload.member.address
+- event_type: member.create.end
+  traits:
+    <<: *member_traits
+    weight:
+      fields: payload.member.weight
+    subnet_id:
+      fields: payload.member.subnet_id
+    tenant_id:
+      fields: payload.member.tenant_id
+    address:
+      fields: payload.member.address
+    protocol_port:
+      fields: payload.member.protocol_port
+- event_type: member.update.start
+  traits:
+    <<: *member_traits
+    weight:
+      fields: payload.member.weight
+- event_type: member.update.end
+  traits:
+    <<: *member_traits
+    weight:
+      fields: payload.member.weight
+    subnet_id:
+      fields: payload.member.subnet_id
+    tenant_id:
+      fields: payload.member.tenant_id
+    address:
+      fields: payload.member.address
+    protocol_port:
+      fields: payload.member.protocol_port
+- event_type: healthmonitor.*
+  traits: &healthmonitor
+    user_id:
+      fields: _context_user_id
+    project_id:
+      fields: _context_tenant_id
+    resource_id:
+      fields: ['payload.healthmonitor.id', 'payload.id', 'payload.healthmonitor_id']
+    admin_state_up:
+      fields: payload.healthmonitor.admin_state_up
+    delay:
+      fields: payload.healthmonitor.delay
+    max_retries:
+      fields: payload.healthmonitor.max_retries
+    timeout:
+      fields: payload.healthmonitor.timeout
+    type:
+      fields: payload.healthmonitor.type
+- event_type: healthmonitor.create.start
+  traits:
+    <<: *healthmonitor_traits
+    pool_id:
+      fields: payload.healthmonitor.pool_id
+- event_type: healthmonitor.create.end
+  traits:
+    <<: *healthmonitor_traits
+    tenant_id:
+      fields: payload.healthmonitor.tenant_id
+    expected_codes:
+      fields: payload.healthmonitor.expected_codes
+    http_method:
+      fields: payload.healthmonitor.http_method
+    pools:
+      fields: payload.healthmonitor.pools
+    url_path:
+      fields: payload.healthmonitor.url_path
+- event_type: healthmonitor.update.end
+  traits:
+    <<: *healthmonitor_traits
+    tenant_id:
+      fields: payload.healthmonitor.tenant_id
+    expected_codes:
+      fields: payload.healthmonitor.expected_codes
+    http_method:
+      fields: payload.healthmonitor.http_method
+    pools:
+      fields: payload.healthmonitor.pools
+    url_path:
+      fields: payload.healthmonitor.url_path
