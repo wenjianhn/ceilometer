@@ -576,7 +576,7 @@
     protocol_port:
       fields: payload.member.protocol_port
 - event_type: healthmonitor.*
-  traits: &healthmonitor
+  traits: &healthmonitor_traits
     user_id:
       fields: _context_user_id
     project_id:
